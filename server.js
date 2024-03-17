@@ -1,37 +1,93 @@
-const express = require('express');
-const mssql = require('mssql');
+const sql = require('mssql/msnodesqlv8');
 
-const app = express();
-
-// SQL Server configuration
 const config = {
-  user: 'your_db_user',
-  password: 'your_db_password',
-  server: 'your_db_server',
+  server: 'ARTHUR',
   database: 'Restaurante',
+  driver: 'msnodesqlv8',
+  options: {
+    trustedConnection: true,
+    enableArithAbort: true,
+  },
 };
 
-// API endpoint to fetch categories
-app.get('/api/categories', async (req, res) => {
-  try {
-    // Connect to the database
-    await mssql.connect(config);
+let categories = [];
 
-    // Query the database
-    const result = await mssql.query`SELECT id, name, image FROM categorias`;
+sql.connect(config, function (err) {
+  if (err) {
+    console.log('Error connecting to SQL Server:', err);
+  } else {
+    console.log('Connected to SQL Server');
 
-    // Send the result as JSON
-    res.json(result.recordset);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    // Close the database connection
-    await mssql.close();
+    var request = new sql.Request();
+
+    var query = "SELECT CategoriaID, Nombre, Imagen FROM categorias";
+
+    request.query(query, function (err, recordset) {
+      if (err) {
+        console.log('Error executing query:', err);
+      } else {
+        categories = recordset.recordset.map(record => ({
+          id: record.CategoriaID,
+          name: record.Nombre,
+          image: record.Imagen,
+        }));
+
+        console.log('Categories:', categories);
+      }
+
+      sql.close();
+    });
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:8081`);
+module.exports = categories;
+
+
+/*
+
+const sql = require('mssql/msnodesqlv8');
+
+const config = {
+  server: 'ARTHUR',
+  database: 'Restaurante',
+  driver: 'msnodesqlv8',
+  options: {
+    trustedConnection: true,
+    enableArithAbort: true,
+  },
+};
+
+let categories = [];
+
+sql.connect(config, function (err) {
+  if (err) {
+    console.log('Error connecting to SQL Server:', err);
+  } else {
+    console.log('Connected to SQL Server');
+
+    var request = new sql.Request();
+
+    var query = "SELECT CategoriaID, Nombre, Imagen FROM categorias";
+
+    request.query(query, function (err, recordset) {
+      if (err) {
+        console.log('Error executing query:', err);
+      } else {
+        categories = recordset.recordset.map(record => ({
+            id: record.CategoriaID,
+            name: record.Nombre,
+            image: record.Imagen,
+        }));
+
+        console.log('Categories:', categories);
+      }
+
+      sql.close();
+    });
+  }
 });
+
+module.exports = categories;
+
+
+*/

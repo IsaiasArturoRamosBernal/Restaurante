@@ -6,6 +6,7 @@ import { Image, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import DishRow from '../components/dishRows';
 import { themeColors } from '../theme/Theme';
 import CartIcon from '../components/cartIcon';
+import {StatusBar} from'expo-status-bar';
 
 export default function RestaurantScreen() {
   const route = useRoute();
@@ -17,6 +18,7 @@ export default function RestaurantScreen() {
   return (
     <View>
       <CartIcon/>
+      <StatusBar style="light"/>
       <ScrollView>
         <View className="relative">
           <Image className="w-full h-72" source={require('../assets/images/a.png')} />
