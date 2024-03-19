@@ -4,11 +4,19 @@ import {featured} from '../constants';
 import { useNavigation} from 'react-navigation/native';
 import MapView, {Marker} from 'react-native-maps';
 import * as Icon from "react-native-feather";
-
+import {useSelector} from 'react-redux';
+import { selectRestaurant } from '../slices/restaurantSlice';
 
 export default function DeliveryScreen() {
-const restaurant= featured. restaurants[0];
+const restaurant= useSelector(selectRestaurant)
 const navigation = useNavigation();
+const dispatch=useDispatch();
+
+const cancelOrder=()=>{
+    navigation.navigate('Home');
+    dispatch(emptyCart());
+}
+
 return (
 <View className="flex-1">
 {/* map view */}
@@ -71,7 +79,7 @@ Your Rider
 <TouchableOpacity className="bg-white p-2 rounded-full">
 <Icon.Phone fill={themeColors.bgColor(1)} stroke={themeColor.bgColor(1) }strokeWidth={1}/>
 </TouchableOpacity>
-<TouchableOpacity onPress={()=> navigation.navigate('Home')} className="bg-white p-2 rounded-full">
+<TouchableOpacity onPress={cancelOrder} className="bg-white p-2 rounded-full">
 <Icon.X stroke={'red'} strokeWidth={4}/>
 </TouchableOpacity>
 </View>

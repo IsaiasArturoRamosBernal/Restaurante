@@ -7,14 +7,21 @@ import DishRow from '../components/dishRows';
 import { themeColors } from '../theme/Theme';
 import CartIcon from '../components/cartIcon';
 import {StatusBar} from'expo-status-bar';
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import {setRestaurant} from '../slice/restaurantSlice';
 
 export default function RestaurantScreen() {
   const route = useRoute();
   const navigation = useNavigation();
   const item = route.params;
 
-  console.log('restaurant: ', item);
-
+  //console.log('restaurant: ', item);
+useEffect(()=>{
+if(item && item.id){
+  dispatchEvent(setRestaurant({...item}))
+}
+},[])
   return (
     <View>
       <CartIcon/>
